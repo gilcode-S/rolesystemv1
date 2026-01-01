@@ -1,4 +1,5 @@
 import InputError from '@/components/input-error';
+import TablePagination from '@/components/table-pagination';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -129,7 +130,7 @@ export default function Permissions({ permissions }: { permissions: Permission }
                             <TableBody>
                                 {permissions.data.map((permission, index) => (
                                     <TableRow className="odd:bg-slate-100 dark:odd:bg-slate-800" key={index}>
-                                        <TableCell>{index + 1}</TableCell>
+                                        <TableCell>{permissions.from + index}</TableCell>
                                         <TableCell>{permission.name}</TableCell>
                                         <TableCell>{permission.created_at}</TableCell>
                                         <TableCell>
@@ -156,6 +157,11 @@ export default function Permissions({ permissions }: { permissions: Permission }
                             </TableBody>
                         </Table>
                     </CardContent>
+                    {permissions.data.length > 0 ? (
+                        <TablePagination total={permissions.total} to={permissions.to} from={permissions.from} links={permissions.links}/>
+                    ): (
+                        <div className='flex h-full items-center justify-center'>No Result Found!</div>
+                    )}
                 </Card>
 
                 {/* add new permission dialog model */}
@@ -231,7 +237,5 @@ export default function Permissions({ permissions }: { permissions: Permission }
         </AppLayout>
     );
 }
-function put(arg0: string) {
-    throw new Error('Function not implemented.');
-}
+
 

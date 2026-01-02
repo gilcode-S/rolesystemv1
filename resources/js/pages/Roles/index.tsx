@@ -22,11 +22,12 @@ import {
 import AppLayout from '@/layouts/app-layout';
 
 
+
 import { type BreadcrumbItem } from '@/types';
 import {  Role } from '@/types/roles_permission';
 
 import { Head, Link, router,  usePage } from '@inertiajs/react';
-import { permission } from 'process';
+
 
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -55,6 +56,7 @@ export default function Roles({ roles }: { roles: Role }) {
             router.delete(`/roles/${id}`);
         }
     }
+   
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -98,17 +100,18 @@ export default function Roles({ roles }: { roles: Role }) {
                                     <TableRow className="odd:bg-slate-100 dark:odd:bg-slate-800" key={index}>
                                         <TableCell>{roles.from + index}</TableCell>
                                         <TableCell>{role.name}</TableCell>
-                                        <TableCell className='flex flex-wrap gap-2'>{role.permissions.map((per, index) => (
+                                        <TableCell className='flex items-center flex-wrap gap-2'>{role.permissions.map((per, index) => (
                                             <Badge variant={'outline'} key={index}>{per}</Badge>
                                         ))}</TableCell>
                                         <TableCell>{role.created_at}</TableCell>
                                         <TableCell>
                                             <div>
-                                                <Link href={`roles/${role.id}/edit`}>
+                                                <Link href={`/roles/${role.id}/edit`}>
                                                     <Button
                                                         className="m-2"
                                                         variant="outline"
                                                         size={'sm'}
+                                                         
                                                     >
                                                         Edit
                                                     </Button>

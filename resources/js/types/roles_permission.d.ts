@@ -13,6 +13,13 @@ interface SingleRole {
     permissions: string[];
 }
 
+export interface RolePermission{
+    id: number;
+    name: string;
+    permissions: SinglePermission[];
+    created_at: string;
+}
+
 export interface Permission extends Pagination {
     data: SinglePermission[];
 }

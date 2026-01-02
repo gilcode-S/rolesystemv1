@@ -75,24 +75,44 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Role $role)
     {
         //
+        return Inertia::render('Roles/edit', [
+            'role' => $role->load('permissions'),
+            'permissions' => Permission::all()->pluck('name'),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Role $role)
     {
-        //
+        //validate 
+         $request->validate([
+            'name' => 'required|unique:roles,name' . $role->id,
+            'permissions' => 'required|array|min:1',
+            'permissions.*' => 'string|exists:permissions,name',
+        ]);
+
+        $role->name = $request->name;
+        $role->save();
+
+        if($request->has('permissions')){
+            $role->syncPermissions($request->permissions);
+        };
+
+        return to_route('roles.index')->with('message', 'Role updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Role $role)
     {
         //
+        $role->delete();
+        return to_route('roles.index')->with('message', 'Role deleted successfully');
     }
 }

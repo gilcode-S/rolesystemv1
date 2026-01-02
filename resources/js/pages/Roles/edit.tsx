@@ -20,6 +20,7 @@ import AppLayout from '@/layouts/app-layout';
 
 
 import { type BreadcrumbItem } from '@/types';
+import { RolePermission } from '@/types/roles_permission';
 
 
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -30,20 +31,21 @@ const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Edit Role',
         href: '/roles',
-    },
+    },  
 ];
 
-export default function CreateRoles({ permissions }: { permissions: string[] }) {
+export default function EditRoles({ permissions, role }: { permissions: string[], role: RolePermission }) {
+    const permissionList = role.permissions.map((perm) => perm.name)
 
-    const { data, setData, errors, post, processing } = useForm({
-        name: '',
-        permissions: [] as string[]
+    const { data, setData, errors, put, processing } = useForm({
+        name: role.name,
+        permissions: permissionList,
 
     })
 
     function submit(e: React.FormEvent) {
         e.preventDefault();
-        post('/roles');
+        put(`/roles/${role.id}`);
     }
 
     return (
@@ -52,7 +54,7 @@ export default function CreateRoles({ permissions }: { permissions: string[] }) 
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <Card>
                     <CardHeader className="flex items-center justify-between">
-                        <CardTitle>Create Roles Management</CardTitle>
+                        <CardTitle>Edit Roles Management</CardTitle>
                         <CardAction>
                             <Link href={'/roles'}>
                                 <Button variant="default">Go Back</Button>
@@ -75,7 +77,7 @@ export default function CreateRoles({ permissions }: { permissions: string[] }) 
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
                                     {permissions.map((permission) => (
                                         <div key={permission} className='flex items-center gap-3'>
-                                            <Checkbox id={permission} onCheckedChange={(checked) => {
+                                            <Checkbox id={permission} checked={data.permissions.includes(permission)} onCheckedChange={(checked) => {
                                                 if (checked) { setData('permissions', [...data.permissions, permission]) }
                                                 else { setData('permissions', data.permissions.filter((p) => p !== permission)) }
                                             }} />
@@ -87,7 +89,7 @@ export default function CreateRoles({ permissions }: { permissions: string[] }) 
 
                             <div className='flex justify-end'>
                                 <Button size={'lg'} type='submit' disabled={processing}>
-                                    Create
+                                    Update
                                 </Button>
                             </div>
                         </form>

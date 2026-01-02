@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Lock } from 'lucide-react';
+import { LayoutGrid, Lock, LockKeyhole } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -26,7 +26,12 @@ const mainNavItems: NavItem[] = [
     title: 'Permissions',
     href: '/permissions',
     icon: Lock
-   }
+   },
+    {
+    title: 'Roles',
+    href: '/roles',
+    icon: LockKeyhole
+   },
 ];
 
 const footerNavItems: NavItem[] = [

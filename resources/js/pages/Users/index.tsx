@@ -19,6 +19,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 
 
@@ -43,7 +44,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Users({ users }: { users: User }) {
 
-
+    const {can}= usePermission();
     const { flash } = usePage<{ flash: { message?: string } }>().props;
 
     useEffect(() => {
@@ -67,9 +68,9 @@ export default function Users({ users }: { users: User }) {
                     <CardHeader className="flex items-center justify-between">
                         <CardTitle>User Management</CardTitle>
                         <CardAction>
-                            <Link href={'/users/create'}>
+                            {can('create user') && <Link href={'/users/create'}>
                                 <Button variant="default">Add New</Button>
-                            </Link>
+                            </Link>}
                         </CardAction>
                     </CardHeader>
 
@@ -111,7 +112,7 @@ export default function Users({ users }: { users: User }) {
                                         <TableCell>{user.created_at}</TableCell>
                                         <TableCell>
                                             <div>
-                                                <Link href={`/users/${user.id}/edit`}>
+                                                {can('update users') && <Link href={`/users/${user.id}/edit`}>
                                                     <Button
                                                         className="m-2"
                                                         variant="outline"
@@ -120,14 +121,14 @@ export default function Users({ users }: { users: User }) {
                                                     >
                                                         Edit
                                                     </Button>
-                                                </Link>
-                                                <Button
+                                                </Link>}
+                                               {can('delete users') &&  <Button
                                                     variant="destructive"
                                                     size={'sm'}
                                                     onClick={() => deleteUser(user.id)}
                                                 >
                                                     Delete
-                                                </Button>
+                                                </Button>}
                                             </div>
                                         </TableCell>
                                     </TableRow>

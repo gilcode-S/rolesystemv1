@@ -28,6 +28,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 
 
@@ -52,6 +53,8 @@ export default function Permissions({ permissions }: { permissions: Permission }
     const [open, isOpen] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const { flash } = usePage<{ flash: { message?: string } }>().props;
+
+    const { can } = usePermission();
 
     useEffect(() => {
         if (flash.message) {
@@ -101,9 +104,10 @@ export default function Permissions({ permissions }: { permissions: Permission }
                     <CardHeader className="flex items-center justify-between">
                         <CardTitle>Permission Management</CardTitle>
                         <CardAction>
+                            {can('create permission') && 
                             <Button variant="default" onClick={() => {
                                 isOpen(true);
-                            }}>Add New</Button>
+                            }}>Add New</Button>}
                         </CardAction>
                     </CardHeader>
 
@@ -135,21 +139,21 @@ export default function Permissions({ permissions }: { permissions: Permission }
                                         <TableCell>{permission.created_at}</TableCell>
                                         <TableCell>
                                             <div>
-                                                <Button
+                                                {can('update permission') && <Button
                                                     className="m-2"
                                                     variant="outline"
                                                     size={'sm'}
                                                     onClick={() => edit(permission)}
                                                 >
                                                     Edit
-                                                </Button>
-                                                <Button
+                                                </Button>}
+                                                {can('delete permission') && <Button
                                                     variant="destructive"
                                                     size={'sm'}
                                                     onClick={() => deletePermission(permission.id)}
                                                 >
                                                     Delete
-                                                </Button>
+                                                </Button>}
                                             </div>
                                         </TableCell>
                                     </TableRow>
@@ -158,8 +162,8 @@ export default function Permissions({ permissions }: { permissions: Permission }
                         </Table>
                     </CardContent>
                     {permissions.data.length > 0 ? (
-                        <TablePagination total={permissions.total} to={permissions.to} from={permissions.from} links={permissions.links}/>
-                    ): (
+                        <TablePagination total={permissions.total} to={permissions.to} from={permissions.from} links={permissions.links} />
+                    ) : (
                         <div className='flex h-full items-center justify-center'>No Result Found!</div>
                     )}
                 </Card>

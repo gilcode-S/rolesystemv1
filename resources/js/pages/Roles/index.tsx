@@ -19,14 +19,15 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 
 
 
 import { type BreadcrumbItem } from '@/types';
-import {  Role } from '@/types/roles_permission';
+import { Role } from '@/types/roles_permission';
 
-import { Head, Link, router,  usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 
 
 import { useEffect } from 'react';
@@ -42,6 +43,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Roles({ roles }: { roles: Role }) {
 
+    const { can } = usePermission();
 
     const { flash } = usePage<{ flash: { message?: string } }>().props;
 
@@ -51,12 +53,12 @@ export default function Roles({ roles }: { roles: Role }) {
         }
     }, [flash.message])
 
-    function deleteRole(id: number){
-        if(confirm('Are you sure you want to delete this role?')){
+    function deleteRole(id: number) {
+        if (confirm('Are you sure you want to delete this role?')) {
             router.delete(`/roles/${id}`);
         }
     }
-   
+
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -66,9 +68,9 @@ export default function Roles({ roles }: { roles: Role }) {
                     <CardHeader className="flex items-center justify-between">
                         <CardTitle>Roles Management</CardTitle>
                         <CardAction>
-                            <Link href={'roles/create'}>
+                            {can('create roles') && <Link href={'roles/create'}>
                                 <Button variant="default">Add New</Button>
-                            </Link>
+                            </Link>}
                         </CardAction>
                     </CardHeader>
 
@@ -106,23 +108,23 @@ export default function Roles({ roles }: { roles: Role }) {
                                         <TableCell>{role.created_at}</TableCell>
                                         <TableCell>
                                             <div>
-                                                <Link href={`/roles/${role.id}/edit`}>
+                                                {can('update roles') && <Link href={`/roles/${role.id}/edit`}>
                                                     <Button
                                                         className="m-2"
                                                         variant="outline"
                                                         size={'sm'}
-                                                         
+
                                                     >
                                                         Edit
                                                     </Button>
-                                                </Link>
-                                                <Button
+                                                </Link>}
+                                                {can('delete roles') && <Button
                                                     variant="destructive"
                                                     size={'sm'}
                                                     onClick={() => deleteRole(role.id)}
                                                 >
                                                     Delete
-                                                </Button>
+                                                </Button>}
                                             </div>
                                         </TableCell>
                                     </TableRow>

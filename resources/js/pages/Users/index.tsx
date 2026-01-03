@@ -24,7 +24,8 @@ import AppLayout from '@/layouts/app-layout';
 
 
 import { type BreadcrumbItem } from '@/types';
-import {  Role } from '@/types/roles_permission';
+
+import { User } from '@/types/user';
 
 import { Head, Link, router,  usePage } from '@inertiajs/react';
 
@@ -35,12 +36,12 @@ import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Roles',
-        href: '/roles',
+        title: 'Users',
+        href: '/users',
     },
 ];
 
-export default function Roles({ roles }: { roles: Role }) {
+export default function Users({ users }: { users: User }) {
 
 
     const { flash } = usePage<{ flash: { message?: string } }>().props;
@@ -51,22 +52,22 @@ export default function Roles({ roles }: { roles: Role }) {
         }
     }, [flash.message])
 
-    function deleteRole(id: number){
-        if(confirm('Are you sure you want to delete this role?')){
-            router.delete(`/roles/${id}`);
+    function deleteUser(id: number){
+        if(confirm('Are you sure you want to delete this user?')){
+            router.delete(`/users/${id}`);
         }
     }
    
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Roles" />
+            <Head title="Users" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <Card>
                     <CardHeader className="flex items-center justify-between">
-                        <CardTitle>Roles Management</CardTitle>
+                        <CardTitle>User Management</CardTitle>
                         <CardAction>
-                            <Link href={'roles/create'}>
+                            <Link href={'/users/create'}>
                                 <Button variant="default">Add New</Button>
                             </Link>
                         </CardAction>
@@ -84,7 +85,10 @@ export default function Roles({ roles }: { roles: Role }) {
                                         Name
                                     </TableHead>
                                     <TableHead className="font-bold text-white">
-                                        Permissions
+                                        Email
+                                    </TableHead>
+                                    <TableHead className="font-bold text-white">
+                                        Roles
                                     </TableHead>
                                     <TableHead className="font-bold text-white">
                                         Created At
@@ -96,17 +100,18 @@ export default function Roles({ roles }: { roles: Role }) {
                             </TableHeader>
 
                             <TableBody>
-                                {roles.data.map((role, index) => (
+                                {users.data.map((user, index) => (
                                     <TableRow className="odd:bg-slate-100 dark:odd:bg-slate-800" key={index}>
-                                        <TableCell>{roles.from + index}</TableCell>
-                                        <TableCell>{role.name}</TableCell>
-                                        <TableCell className='flex items-center flex-wrap gap-2'>{role.permissions.map((role, index) => (
+                                        <TableCell>{users.from + index}</TableCell>
+                                        <TableCell>{user.name}</TableCell>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell className='flex items-center flex-wrap gap-2'>{user.roles.map((role, index) => (
                                             <Badge variant={'outline'} key={index}>{role}</Badge>
                                         ))}</TableCell>
-                                        <TableCell>{role.created_at}</TableCell>
+                                        <TableCell>{user.created_at}</TableCell>
                                         <TableCell>
                                             <div>
-                                                <Link href={`/roles/${role.id}/edit`}>
+                                                <Link href={`/users/${user.id}/edit`}>
                                                     <Button
                                                         className="m-2"
                                                         variant="outline"
@@ -119,7 +124,7 @@ export default function Roles({ roles }: { roles: Role }) {
                                                 <Button
                                                     variant="destructive"
                                                     size={'sm'}
-                                                    onClick={() => deleteRole(role.id)}
+                                                    onClick={() => deleteUser(user.id)}
                                                 >
                                                     Delete
                                                 </Button>
@@ -130,8 +135,8 @@ export default function Roles({ roles }: { roles: Role }) {
                             </TableBody>
                         </Table>
                     </CardContent>
-                    {roles.data.length > 0 ? (
-                        <TablePagination total={roles.total} to={roles.to} from={roles.from} links={roles.links} />
+                    {users.data.length > 0 ? (
+                        <TablePagination total={users.total} to={users.to} from={users.from} links={users.links} />
                     ) : (
                         <div className='flex h-full items-center justify-center'>No Result Found!</div>
                     )}
